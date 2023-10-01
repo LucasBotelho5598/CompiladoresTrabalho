@@ -1,0 +1,150 @@
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        List<ContaBancaria> contas = new List<ContaBancaria>();
+
+        while (true)
+        {
+            Console.WriteLine("\nBem-vindo ao Simulador de Banco!");
+            Console.WriteLine("Escolha uma opção:");
+            Console.WriteLine("1. Criar uma nova conta");
+            Console.WriteLine("2. Acessar uma conta existente");
+            Console.WriteLine("3. Sair");
+
+            int opcao = int.Parse(Console.ReadLine());
+
+            switch (opcao)
+            {
+                case 1:
+                    Console.Write("Digite seu nome: ");
+                    string nome = Console.ReadLine();
+                    Console.Write("Digite o saldo inicial: ");
+                    double saldoInicial = double.Parse(Console.ReadLine());
+                    ContaBancaria novaConta = new ContaBancaria(nome, saldoInicial);
+                    contas.Add(novaConta);
+                    Console.WriteLine($"Conta criada com sucesso. Número da conta: {novaConta.NumeroConta}");
+                    break;
+
+                case 2:
+                    Console.Write("Digite o número da conta: ");
+                    int numeroConta = int.Parse(Console.ReadLine());
+                    ContaBancaria conta = EncontrarContaPorNumero(contas, numeroConta);
+                    if (conta != null)
+                    {
+                        Console.WriteLine($"Bem-vindo, {conta.Titular}!");
+                        while (true)
+                        {
+                            Console.WriteLine("\nEscolha uma opção:");
+                            Console.WriteLine("1. Verificar saldo");
+                            Console.WriteLine("2. Fazer um depósito");
+                            Console.WriteLine("3. Fazer um saque");
+                            Console.WriteLine("4. Voltar ao menu principal");
+
+                            int opcaoConta = int.Parse(Console.ReadLine());
+
+                            switch (opcaoConta)
+                            {
+                                case 1:
+                                    Console.WriteLine($"Saldo atual: {conta.Saldo:C}");
+                                    break;
+
+                                case 2:
+                                    Console.Write("Digite o valor do depósito: ");
+                                    double valorDeposito = double.Parse(Console.ReadLine());
+                                    conta.Depositar(valorDeposito);
+                                    Console.WriteLine("Depósito realizado com sucesso.");
+                                    break;
+
+                                case 3:
+                                    Console.Write("Digite o valor do saque: ");
+                                    double valorSaque = double.Parse(Console.ReadLine());
+                                    if (conta.Sacar(valorSaque))
+                                    {
+                                        Console.WriteLine("Saque realizado com sucesso.");
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Saldo insuficiente para o saque.");
+                                    }
+                                    break;
+
+                                case 4:
+                                    Console.WriteLine("Saindo da conta...");
+                                    break;
+
+                                default:
+                                    Console.WriteLine("Opção inválida.");
+                                    break;
+                            }
+
+                            if (opcaoConta == 4)
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Número de conta inválido.");
+                    }
+                    break;
+
+                case 3:
+                    Console.WriteLine("Saindo do programa. Obrigado por usar o Simulador de Banco!");
+                    return;
+
+                default:
+                    Console.WriteLine("Opção inválida.");
+                    break;
+            }
+        }
+    }
+
+    static ContaBancaria EncontrarContaPorNumero(List<ContaBancaria> contas, int numeroConta)
+    {
+        foreach (var conta in contas)
+        {
+            if (conta.NumeroConta == numeroConta)
+            {
+                return conta;
+            }
+        }
+        return null;
+    }
+}
+
+class ContaBancaria
+{
+    private static int proximoNumeroConta = 1;
+
+    public int NumeroConta { get; }
+    public string Titular { get; }
+    public double Saldo { get; private set; }
+
+    public ContaBancaria(string titular, double saldoInicial)
+    {
+        NumeroConta = proximoNumeroConta++;
+        Titular = titular;
+        Saldo = saldoInicial;
+    }
+
+    public void Depositar(double valor)
+    {
+        Saldo += valor;
+    }
+
+    public bool Sacar(double valor)
+    {
+        if (valor <= Saldo)
+        {
+            Saldo -= valor;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+}
