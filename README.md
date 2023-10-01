@@ -4,6 +4,9 @@ Análise Léxica da linguagem C# usando JFlex e Gals, trabalho destinado aos alu
 
 ## Alunos: 
 Lucas Botelho
+
 Marcos Vinicíus 
+
 Márcio Gonçalves
+
 Izabel Correa
